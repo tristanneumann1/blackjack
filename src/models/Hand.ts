@@ -29,7 +29,7 @@ class Hand {
     }
     this.active = true
     this.cards.push(card);
-    this.value = this.handValue()
+    this.value = this.getHandValue()
     if(this.value.hardTotal > 21) {
       this.busted = true
       this.active = false
@@ -39,7 +39,7 @@ class Hand {
   beatsHouse(houseValue: HandValue) {
     this.active = false
     if(!this.value) {
-      this.value = this.handValue()
+      this.value = this.getHandValue()
     }
 
     if(this.value.isBlackJack && !houseValue.isBlackJack) {

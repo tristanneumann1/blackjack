@@ -38,7 +38,7 @@ export class RiggedGame extends Game {
 
 export function riggedGameFactory(type: CARD_TYPES) {
   return new RiggedGame(
-    Array(10)
+    Array(15)
       .fill(type)
       .map(value => {
         return new Card(value, CARD_SUITS.CLUB);

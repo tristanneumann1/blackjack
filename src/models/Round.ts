@@ -62,6 +62,9 @@ class Round {
     if (!this.getActivePlayer().getCurrentHand()) {
       this.playerIndex++
     }
+    if (!this.getActivePlayer()) {
+      this.endRound()
+    }
   }
 
   endRound() {

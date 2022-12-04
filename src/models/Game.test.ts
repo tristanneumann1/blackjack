@@ -241,4 +241,21 @@ describe('Game', () => {
 
     expect(player.getCurrentHand().getIsInsured()).toBe(true)
   })
+
+  it('cannot end round if it is still active', () => {
+    const game = riggedGameFactory(CARD_TYPES.ACE)
+    game.addPlayer(new Player())
+    game.startRound()
+
+    expect(() => game.endRound()).toThrowError('cannot end round')
+  })
+  
+  it('ends round', () => {
+    const game = riggedGameFactory(CARD_TYPES.ACE)
+    game.endRound()
+    
+    expect(game.activeRound).toBe(null)
+    expect(game.getActivePlayer()).toBe(null)
+    expect(game.pastRounds.length).toBe(1)
+  })
 })

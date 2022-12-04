@@ -5,7 +5,8 @@ import Round from './Round.js';
 import Shoe from './Shoe.js';
 
 export default class Game {
-  activeRound: Round
+  activeRound: Round = null
+  pastRounds: Round[] = []
   protected shoe: Shoe = new Shoe()
   private players: Player[] = []
 
@@ -78,8 +79,16 @@ export default class Game {
     }
   }
 
+  endRound() {
+    if (this.activeRound?.active) {
+      throw new Error('cannot end round')
+    }
+    this.pastRounds.push(this.activeRound)
+    this.activeRound = null
+  }
+
   getActivePlayer(): Player {
-    return this.activeRound.getActivePlayer()
+    return this.activeRound?.getActivePlayer() || null
   }
 
   protected fillShoe() {

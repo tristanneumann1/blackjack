@@ -31,7 +31,7 @@ describe('Hand', () => {
     expect(hand.busted).toBe(false)
     expect(hand.active).toBe(true)
 
-    expect(hand.value).toEqual(handValueFactory(10 + 5 + 2))
+    expect(hand.getHandValue()).toEqual(handValueFactory(10 + 5 + 2))
     expect(hand.getHandSize()).toBe(3)
   })
 
@@ -53,7 +53,7 @@ describe('Hand', () => {
     hand.take(cardFactory('ACE'))
 
     expect(hand.busted).toBe(false)
-    expect(hand.value).toEqual({
+    expect(hand.getHandValue()).toEqual({
       hardTotal: 11,
       softTotal: 21,
       isSoft: true,
@@ -70,13 +70,13 @@ describe('Hand', () => {
     expectValue.hardTotal = 3
     expectValue.isSoft = true
     
-    expect(hand.value).toEqual(expectValue)
+    expect(hand.getHandValue()).toEqual(expectValue)
 
     hand.take(cardFactory())
-    expect(hand.value).toEqual(handValueFactory(13))
+    expect(hand.getHandValue()).toEqual(handValueFactory(13))
   })
 
-  describe('beatsHouse', () => {
+  describe('compare to house', () => {
     it('goes inactive', () => {
       const hand = new Hand()
       hand.beatsHouse(handValueFactory())

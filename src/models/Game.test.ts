@@ -3,7 +3,7 @@ import Card from './Card.js'
 import Game from './Game.js'
 import Hand from './Hand.js'
 import Player from './Player.js'
-import { riggedGameFactory, RiggedGame, playerWithFundsFactory } from '../../test/utils.js'
+import { riggedGameFactory, RiggedGame, playerWithFundsFactory, handFactory } from '../../test/utils.js'
 import Round from './Round.js'
 
 describe('Game', () => {
@@ -51,22 +51,42 @@ describe('Game', () => {
   
       expect(game.getActivePlayer()).toBe(null)
     })
+
+    it('pays player if they win', () => {
+      const player: Player = playerWithFundsFactory(100, 10)
+      const game = riggedGameFactory({
+        cards: [
+          CARD_TYPES.SEVEN,
+          CARD_TYPES.QUEEN,
+          CARD_TYPES.QUEEN,
+          CARD_TYPES.QUEEN
+        ]
+      })
+
+      game.addPlayer(player)
+      game.startRound()
+      game.takeTurn(TURNS.STAND)
+
+      game.endRound()
+
+      expect(player.funds).toBe(110)
+    })
   })
 
   describe('hit', () => {
     it('throws error if hand cannot be hit', () => {
       const game = new Game()
       const player = new Player()
+      player.dealHand(handFactory(CARD_TYPES.TEN, CARD_TYPES.TEN, CARD_TYPES.TEN))
       game.addPlayer(player)
+
       game.startRound()
-  
-      player.getCurrentHand().active = false
   
       expect(() => game.takeTurn(TURNS.HIT)).toThrow('hand cannot be hit')
     })
     
     it('allows the taking of a hit turn', () => {
-      const game = riggedGameFactory(CARD_TYPES.TWO)
+      const game = riggedGameFactory({ type: CARD_TYPES.TWO })
       const player = new Player()
       game.addPlayer(player)
       game.startRound()
@@ -78,7 +98,7 @@ describe('Game', () => {
     })
   
     it('changes round if hand is busted', () => {
-      const game = riggedGameFactory(CARD_TYPES.TEN)
+      const game = riggedGameFactory({ type: CARD_TYPES.TEN })
       const player = new Player()
       game.addPlayer(player)
       game.startRound()
@@ -93,7 +113,7 @@ describe('Game', () => {
     
     it('keeps funds if player loses', () => {
       const player: Player = playerWithFundsFactory(100, 10)
-      const game = riggedGameFactory(CARD_TYPES.QUEEN)
+      const game = riggedGameFactory({ type: CARD_TYPES.QUEEN })
 
       game.addPlayer(player)
       game.startRound()
@@ -107,7 +127,7 @@ describe('Game', () => {
 
   describe('double', () => {
     it('doesn\'t allow double if not first card', () => {
-      const game = riggedGameFactory(CARD_TYPES.TWO)
+      const game = riggedGameFactory({ type: CARD_TYPES.TWO })
       const player = new Player()
       game.addPlayer(player)
       game.startRound()
@@ -118,7 +138,7 @@ describe('Game', () => {
     })
     
     it('doubles the current hand and changes hand', () => {
-      const game = riggedGameFactory(CARD_TYPES.TWO)
+      const game = riggedGameFactory({ type: CARD_TYPES.TWO })
       const player = new Player()
       game.addPlayer(player)
       game.startRound()
@@ -129,6 +149,40 @@ describe('Game', () => {
       expect(handToDouble.getHandSize()).toBe(3)
       expect(handToDouble.getIsDoubled()).toBe(true)
       expect(game.getActivePlayer()).toBe(null)
+    })
+
+    it('doubles the reward if player wins', () => {
+      const player: Player = playerWithFundsFactory(100, 10)
+      const game = riggedGameFactory({
+        cards: [
+          CARD_TYPES.TEN, // player's double card
+          CARD_TYPES.TEN, // House
+          CARD_TYPES.TEN, // House
+          CARD_TYPES.SIX, // player
+          CARD_TYPES.FIVE // player
+        ]
+      })
+
+      game.addPlayer(player)
+      game.startRound()
+      game.takeTurn(TURNS.DOUBLE)
+
+      game.endRound()
+
+      expect(player.funds).toBe(120)
+    })
+    
+    it('doubles the loss if player loses', () => {
+      const player: Player = playerWithFundsFactory(100, 10)
+      const game = riggedGameFactory({ type: CARD_TYPES.TEN })
+
+      game.addPlayer(player)
+      game.startRound()
+      game.takeTurn(TURNS.DOUBLE)
+
+      game.endRound()
+
+      expect(player.funds).toBe(80)
     })
   })
 
@@ -161,7 +215,7 @@ describe('Game', () => {
     })
   
     it('splits hand into two hands for the same player', () => {
-      const game = riggedGameFactory(CARD_TYPES.TWO)
+      const game = riggedGameFactory({ type: CARD_TYPES.TWO })
       const player = new Player()
       game.addPlayer(player)
       game.startRound()
@@ -182,7 +236,7 @@ describe('Game', () => {
     })
   
     it('plays second hand after first is split', () => {
-      const game = riggedGameFactory(CARD_TYPES.TWO)
+      const game = riggedGameFactory({ type: CARD_TYPES.TWO })
       const player = new Player()
       game.addPlayer(player)
       game.startRound()
@@ -195,7 +249,7 @@ describe('Game', () => {
     })
   
     it('can split more then once', () => {
-      const game = riggedGameFactory(CARD_TYPES.TWO)
+      const game = riggedGameFactory({ type: CARD_TYPES.TWO })
       const player = new Player()
       game.addPlayer(player)
       game.startRound()
@@ -213,7 +267,7 @@ describe('Game', () => {
 
   describe('surrender', () => {
     it('does not allow surrender if a card has been hit', () => {
-      const game = riggedGameFactory(CARD_TYPES.TWO)
+      const game = riggedGameFactory({ type: CARD_TYPES.TWO })
       const player = new Player()
       game.addPlayer(player)
       game.startRound()
@@ -223,7 +277,7 @@ describe('Game', () => {
     })
   
     it('will set hand as surrendered and move on', () => {
-      const game = riggedGameFactory(CARD_TYPES.TWO)
+      const game = riggedGameFactory({ type: CARD_TYPES.TWO })
       const player = new Player()
       game.addPlayer(player)
       game.startRound()
@@ -238,7 +292,7 @@ describe('Game', () => {
 
   describe('insurance', () => {
     it('will throw an error if trying to take insurance when house card is not an ace', () => {
-      const game = riggedGameFactory(CARD_TYPES.TWO)
+      const game = riggedGameFactory({ type: CARD_TYPES.TWO })
       game.addPlayer(new Player())
       game.startRound()
   
@@ -246,7 +300,7 @@ describe('Game', () => {
     })
   
     it('will throw an error if trying to take insurance when player hit', () => {
-      const game = riggedGameFactory(CARD_TYPES.ACE)
+      const game = riggedGameFactory({ type: CARD_TYPES.ACE })
       game.addPlayer(new Player())
       game.startRound()
   
@@ -256,7 +310,7 @@ describe('Game', () => {
     })
   
     it('can insure', () => {
-      const game = riggedGameFactory(CARD_TYPES.ACE)
+      const game = riggedGameFactory({ type: CARD_TYPES.ACE })
       const player = new Player()
       game.addPlayer(player)
       game.startRound()
@@ -268,7 +322,7 @@ describe('Game', () => {
   })
 
   it('cannot end round if it is still active', () => {
-    const game = riggedGameFactory(CARD_TYPES.ACE)
+    const game = riggedGameFactory({ type: CARD_TYPES.ACE })
     game.addPlayer(new Player())
     game.startRound()
 
@@ -276,7 +330,7 @@ describe('Game', () => {
   })
   
   it('ends round', () => {
-    const game = riggedGameFactory(CARD_TYPES.ACE)
+    const game = riggedGameFactory({ type: CARD_TYPES.ACE })
     game.endRound()
     
     expect(game.activeRound).toBe(null)

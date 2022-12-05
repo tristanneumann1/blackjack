@@ -27,7 +27,6 @@ describe('Player', () => {
     const firstHand = new Hand()
     player.dealHand(firstHand)
     player.dealHand(new Hand())
-    player.readHands().forEach(hand => hand.active = true)
   
     expect(player.activeHands().length).toBe(2)
     expect(player.getCurrentHand()).toBe(firstHand)  
@@ -39,7 +38,6 @@ describe('Player', () => {
     const secondHand = new Hand()
     player.dealHand(new Hand())
     player.dealHand(secondHand)
-    player.readHands().forEach(hand => hand.active = true)
   
     player.changeHand()
 
@@ -53,19 +51,18 @@ describe('Player', () => {
     expect(player.funds).toBe(3000)
   })
 
-  it('only allows positive betsizes', () => {
+  it('only allows positive bet sizes', () => {
     const player = new Player()
     expect(() => player.setBetSize(-10)).toThrowError('invalid bet size')
     expect(() => player.setBetSize(4.6)).toThrowError('invalid bet size')
   })
 
-  it('can not hit if not enough funds', () => {
+  it('can not deal hand if not enough funds', () => {
     const player = new Player()
     player.addFunds(10)
     player.setBetSize(100)
-    player.dealHand(new Hand())
 
-    expect(player.canHit()).toBe(false)
+    expect(() => player.dealHand(new Hand())).toThrowError('insufficient funds')
   })
 
   it('sets bet size on hand', () => {
@@ -218,12 +215,16 @@ describe('Player', () => {
       expect(player.funds).toBe(110)
     })
 
-    it('cannot payout if hand has no result', () => {
+    it('does not payout disactive hands', () => {
       const player = playerWithFundsFactory(100, 10)
-      const hand = handFactory()
+      const hand = handFactory(CARD_TYPES.TEN, CARD_TYPES.TEN)
+      hand.beatsHouse(handValueFactory({ softTotal: 27 }))
+      hand.disactivate()
       
       player.dealHand(hand)
-      expect(() => player.payOut()).toThrowError('can not payout player')
+      player.payOut()
+  
+      expect(player.funds).toBe(90)
     })
   })
 })

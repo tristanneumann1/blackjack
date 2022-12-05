@@ -19,7 +19,7 @@ describe('Hand', () => {
   it('is initialised', () => {
     const hand = new Hand()
     expect(hand.isBusted()).toBe(false)
-    expect(hand.active).toBe(false)
+    expect(hand.getActive()).toBe(true)
   })
 
   it('can draw cards', () => {
@@ -29,7 +29,6 @@ describe('Hand', () => {
     hand.take(cardFactory('TWO'))
 
     expect(hand.isBusted()).toBe(false)
-    expect(hand.active).toBe(true)
 
     expect(hand.getHandValue()).toEqual(handValueFactory(10 + 5 + 2))
     expect(hand.getHandSize()).toBe(3)
@@ -42,7 +41,6 @@ describe('Hand', () => {
     hand.take(cardFactory())
 
     expect(hand.isBusted()).toBe(true)
-    expect(hand.active).toBe(false)
     
     expect(() => hand.take(cardFactory())).toThrow('cannot draw, hand is busted')
   })
@@ -76,13 +74,14 @@ describe('Hand', () => {
     expect(hand.getHandValue()).toEqual(handValueFactory(13))
   })
 
+  
+  it('goes inactive', () => {
+    const hand = new Hand()
+    hand.disactivate()
+    expect(hand.getActive()).toBe(false)
+  })
+
   describe('compare to house', () => {
-    it('goes inactive', () => {
-      const hand = new Hand()
-      hand.beatsHouse(handValueFactory())
-      expect(hand.active).toBe(false)
-    })
-    
     it('handles player BJ', () => {
       const hand = new Hand()
       hand.take(cardFactory('TEN'))

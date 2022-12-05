@@ -39,11 +39,15 @@ export class RiggedGame extends Game {
   }
 }
 
-export function riggedGameFactory(type: CARD_TYPES) {
+interface RiggedGameFactoryOptions {
+  type?: CARD_TYPES,
+  cards?: CARD_TYPES[]
+}
+
+export function riggedGameFactory(options: RiggedGameFactoryOptions = {}) {
+  const cards: CARD_TYPES[] = options.cards?? Array(15).fill(options.type)
   return new RiggedGame(
-    Array(15)
-      .fill(type)
-      .map(value => {
+    cards.map(value => {
         return new Card(value, CARD_SUITS.CLUB);
       })
   );
@@ -61,7 +65,6 @@ export function handFactory(...cardTypes: CARD_TYPES[]): Hand {
     cardTypes = [CARD_TYPES.TEN, CARD_TYPES.TEN]
   }
   return new Hand({
-    active: true,
     cards: cardTypes.map(type => {
       return new Card(type, CARD_SUITS.CLUB)
     })

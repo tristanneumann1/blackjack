@@ -39,7 +39,7 @@ export default class Game {
           throw new Error('hand cannot be hit')
         }
         this.hit(activeHand);
-        if (!activeHand.active) {
+        if (activeHand.isBusted()) {
           this.activeRound.endTurn()
         }
         break
@@ -48,10 +48,8 @@ export default class Game {
         if (!activePlayer.canDouble()) {
           throw new Error('cannot double after hitting')
         }
-        // activePlayer double funds
         activeHand.take(this.shoe.draw()[0])
-        activeHand.double()
-        activeHand.active = false
+        activePlayer.double()
         this.activeRound.endTurn()
         break
       
@@ -84,7 +82,7 @@ export default class Game {
     if (this.activeRound?.active) {
       throw new Error('cannot end round')
     }
-    // this.activeRound.players.forEach(player => player.payOut())
+    this.activeRound?.players.forEach(player => player.payOut())
     this.pastRounds.push(this.activeRound)
     this.activeRound = null
   }
@@ -97,7 +95,7 @@ export default class Game {
     this.shoe.fill()
   }
 
-  private hit(activeHand: Hand) {
-    activeHand.take(this.shoe.draw()[0]);
+  private hit(currentHand: Hand) {
+    currentHand.take(this.shoe.draw()[0]);
   }
 }

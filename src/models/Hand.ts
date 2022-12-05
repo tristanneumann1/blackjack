@@ -4,14 +4,13 @@ import Card from './Card.js';
 
 interface HandOptions {
   isSplit?: boolean,
-  cards?: Card[],
-  active?: boolean
+  cards?: Card[]
 }
 
 class Hand {
   readonly cards: Card[] = [];
-  active = false
   private bet = 0
+  private active = true
   private isDoubled = false
   private isSurrendered = false
   private isInsured = false
@@ -22,18 +21,13 @@ class Hand {
   constructor(options: HandOptions = {}) {
     this.isSplit = options.isSplit || false
     this.cards = options.cards || []
-    this.active = options.active || false
   }
 
   take(card: Card) {
     if (this.isBusted()) {
       throw new Error('cannot draw, hand is busted')
     }
-    this.active = true
     this.cards.push(card);
-    if(this.isBusted()) {
-      this.active = false
-    }
   }
 
   getHandSize(): number {
@@ -96,6 +90,14 @@ class Hand {
       value.isBlackJack = true
     }
     return value
+  }
+
+  disactivate() {
+    this.active = false
+  }
+  
+  getActive(): boolean {
+    return this.active
   }
 
   isBusted(): boolean {

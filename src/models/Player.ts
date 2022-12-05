@@ -10,6 +10,9 @@ export default class Player {
   private handIndex = 0
 
   dealHand(hand = new Hand()): void {
+    if (this.funds < this.betSize) {
+      throw new Error('insufficient funds')
+    }
     hand.setBet(this.betSize)
     this.funds -= this.betSize
     this.hands.push(hand)
@@ -27,7 +30,7 @@ export default class Player {
   }
 
   activeHands() :Hand[] {
-    return this.hands.filter(hand => hand.active)
+    return this.hands.filter(hand => hand.getActive())
   }
 
   readHands() :Hand[] {
@@ -43,7 +46,7 @@ export default class Player {
   }
 
   canHit(): boolean {
-    return this.getCurrentHand()?.active || false
+    return this.getCurrentHand() ? !this.getCurrentHand().isBusted() : false
   }
 
   canDouble(): boolean {
@@ -79,11 +82,8 @@ export default class Player {
   }
 
   payOut() {
-    if (this.activeHands().filter(hand => hand.getResult() === null).length) {
-      throw new Error('can not payout player')
-    }
-
     this.activeHands().forEach(hand => {
+      hand.disactivate()
       const bet = hand.getBet()
       let reward = 0
 

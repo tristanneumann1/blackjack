@@ -8,8 +8,8 @@ import { HandValue } from '../interfaces.js';
 class Round {
   active = false;
   readonly id: string;
+  players: Player[] = [];
   private shoe: Shoe;
-  private players: Player[] = [];
   private house: Hand
   private playerIndex = 0
 

@@ -48,6 +48,7 @@ export default class Game {
         if (!activePlayer.canDouble()) {
           throw new Error('cannot double after hitting')
         }
+        // activePlayer double funds
         activeHand.take(this.shoe.draw()[0])
         activeHand.double()
         activeHand.active = false
@@ -83,6 +84,7 @@ export default class Game {
     if (this.activeRound?.active) {
       throw new Error('cannot end round')
     }
+    // this.activeRound.players.forEach(player => player.payOut())
     this.pastRounds.push(this.activeRound)
     this.activeRound = null
   }

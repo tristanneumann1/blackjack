@@ -18,7 +18,7 @@ function handValueFactory(total = 17): HandValue {
 describe('Hand', () => {
   it('is initialised', () => {
     const hand = new Hand()
-    expect(hand.busted).toBe(false)
+    expect(hand.isBusted()).toBe(false)
     expect(hand.active).toBe(false)
   })
 
@@ -28,7 +28,7 @@ describe('Hand', () => {
     hand.take(cardFactory('FIVE'))
     hand.take(cardFactory('TWO'))
 
-    expect(hand.busted).toBe(false)
+    expect(hand.isBusted()).toBe(false)
     expect(hand.active).toBe(true)
 
     expect(hand.getHandValue()).toEqual(handValueFactory(10 + 5 + 2))
@@ -41,7 +41,7 @@ describe('Hand', () => {
     hand.take(cardFactory())
     hand.take(cardFactory())
 
-    expect(hand.busted).toBe(true)
+    expect(hand.isBusted()).toBe(true)
     expect(hand.active).toBe(false)
     
     expect(() => hand.take(cardFactory())).toThrow('cannot draw, hand is busted')
@@ -52,7 +52,7 @@ describe('Hand', () => {
     hand.take(cardFactory())
     hand.take(cardFactory('ACE'))
 
-    expect(hand.busted).toBe(false)
+    expect(hand.isBusted()).toBe(false)
     expect(hand.getHandValue()).toEqual({
       hardTotal: 11,
       softTotal: 21,

@@ -1,6 +1,9 @@
 import { CARD_SUITS, CARD_TYPES } from '../src/enums.js';
+import { HandValue } from '../src/interfaces.js';
 import Card from '../src/models/Card.js';
 import Game from '../src/models/Game.js';
+import Hand from '../src/models/Hand.js';
+import Player from '../src/models/Player.js';
 import Shoe from '../src/models/Shoe.js';
 
 interface FillShoeOptions {
@@ -44,4 +47,33 @@ export function riggedGameFactory(type: CARD_TYPES) {
         return new Card(value, CARD_SUITS.CLUB);
       })
   );
+}
+
+export function playerWithFundsFactory(funds: number, betSize = 0): Player {
+  const player = new Player()
+  player.addFunds(funds)
+  player.setBetSize(betSize)
+  return player
+}
+
+export function handFactory(...cardTypes: CARD_TYPES[]): Hand {
+  if(!cardTypes.length) {
+    cardTypes = [CARD_TYPES.TEN, CARD_TYPES.TEN]
+  }
+  return new Hand({
+    active: true,
+    cards: cardTypes.map(type => {
+      return new Card(type, CARD_SUITS.CLUB)
+    })
+  })
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function handValueFactory(options: any = {}): HandValue {
+  return {
+    hardTotal: options.hardTotal || 17,
+    softTotal: options.softTotal || 17,
+    isSoft: options.isSoft || false,
+    isBlackJack: options.isBlackJack || false
+  }
 }

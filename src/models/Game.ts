@@ -57,8 +57,7 @@ export default class Game {
         if (!activePlayer.canSplit()) {
           throw new Error('cannot split hand')
         }
-        activePlayer.dealHand(activeHand.split())
-        this.hit(activeHand)
+        this.split(activePlayer, activeHand)
         break
       
       case TURNS.SURRENDER:
@@ -73,7 +72,7 @@ export default class Game {
         if(!this.activeRound.canInsure() || !activePlayer.canInsure()) {
           throw new Error('cannot insure hand')
         }
-        activeHand.insure()
+        activePlayer.insure()
         break
     }
   }
@@ -93,6 +92,13 @@ export default class Game {
 
   protected fillShoe() {
     this.shoe.fill()
+  }
+
+  private split(player: Player, handToSplit: Hand) {
+    const splitHand = handToSplit.split()
+    this.hit(splitHand)
+    this.hit(handToSplit)
+    player.dealHand(splitHand)
   }
 
   private hit(currentHand: Hand) {

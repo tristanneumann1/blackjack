@@ -27,6 +27,8 @@ function getLatestActiveHand(player: Player) {
 
 const game = new Game()
 const player = new Player()
+player.addFunds(100)
+player.setBetSize(10)
 game.addPlayer(player)
 
 game.startRound()

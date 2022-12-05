@@ -227,7 +227,7 @@ describe('Game', () => {
       const playerOtherHand: Hand = playerHands.filter(hand => hand !== playerActiveHand)[0]
       expect(playerHands.length).toBe(2)
       expect(playerActiveHand.getHandSize()).toBe(2)
-      expect(playerOtherHand.getHandSize()).toBe(1)
+      expect(playerOtherHand.getHandSize()).toBe(2)
   
       expect(playerHands[0].getIsSplit()).toBe(true)
       expect(playerHands[1].getIsSplit()).toBe(true)

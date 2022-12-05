@@ -75,10 +75,15 @@ export default class Player {
   }
 
   canInsure(): boolean {
-    if (this.funds < Math.floor(this.betSize / 2)) {
+    if (this.funds < this.betSize) {
       return false
     }
     return this.getCurrentHand()?.getHandSize() <= 2 || false
+  }
+
+  insure() {
+    this.funds -= this.betSize
+    this.getCurrentHand().insure()
   }
 
   payOut() {

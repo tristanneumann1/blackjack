@@ -91,21 +91,6 @@ describe('Player', () => {
     expect(player.canSplit()).toBe(false)
     expect(player.canInsure()).toBe(false)
   })
-  
-  it('can insure (but not double or split) a hand if insufficient funds', () => {
-    const player = new Player()
-    player.addFunds(150)
-    player.setBetSize(100)
-
-    const hand = new Hand()
-    hand.take(new Card(CARD_TYPES.TWO, CARD_SUITS.CLUB))
-    hand.take(new Card(CARD_TYPES.TWO, CARD_SUITS.HEART))
-    player.dealHand(hand)
-
-    expect(player.canDouble()).toBe(false)
-    expect(player.canSplit()).toBe(false)
-    expect(player.canInsure()).toBe(true)
-  })
 
   describe('payouts', () => {
     it('leaves money on a loss', () => {

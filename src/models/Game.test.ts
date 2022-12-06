@@ -24,6 +24,15 @@ describe('Game', () => {
     expect(player.readHands()[0].getHandSize()).toBe(2)
   })
 
+  it('can access count', () => {
+    const game = riggedGameFactory({ type: CARD_TYPES.TEN })
+    game.addPlayer(new Player())
+    
+    game.startRound()
+
+    expect(game.getRunningCount()).toBe(-4)
+  })
+
   it('throws error if no round available', () => {
     const game = new Game()
     game.addPlayer(new Player())

@@ -4,6 +4,7 @@ import Card from './Card.js'
 class Shoe {
   private cards: Card[] = []
   private discardedCards: Card[] = []
+  private count = 0
   
   fill(deckAmount = 4): void {
     this.emptyShoe()
@@ -29,6 +30,7 @@ class Shoe {
     for (let n = 0; n < number; n++) {
       const drawnCard = this.cards.pop()
       drawnCards.push(drawnCard)
+      this.updateCount(drawnCard)
       this.discardedCards.push(drawnCard)
     }
     return drawnCards
@@ -36,6 +38,20 @@ class Shoe {
 
   take(card: Card) {
     this.cards.push(card)
+  }
+
+  updateCount(card: Card) {
+    if (card.getValue() > 9 || card.isAce()) {
+      this.count--
+      return
+    }
+    if (1 < card.getValue() && card.getValue() < 7) {
+      this.count++
+    }
+  }
+
+  getCount(): number {
+    return this.count
   }
 
   private addDeck(): void {

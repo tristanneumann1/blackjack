@@ -96,6 +96,10 @@ export default class Game {
     return this.activeRound?.getActivePlayer() || null
   }
 
+  getRunningCount(): number {
+    return this.shoe.getCount()
+  }
+
   protected fillShoe() {
     this.shoe.fill()
   }

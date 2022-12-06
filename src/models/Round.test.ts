@@ -51,13 +51,22 @@ describe('Round', () => {
   })
 
   it('deals a hand to the house', () => {
-    const round = new Round(getFilledShoe())
-    round.addPlayer()
-
-    round.start()
+    const houseHand = handFactory(10, 9)
+    const round = roundFactory(houseHand, new Player())
 
     expect(round.houseView()).toHaveLength(1)
-    expect(round.houseView()[0]).toBeInstanceOf(Card)
+    expect(round.houseView()[0]).toBe(houseHand.cards[0])
+  })
+
+  it('reveals house cards when round is finished', () => {
+    const houseHand = handFactory(10, 9)
+    const round = roundFactory(houseHand, new Player())
+
+    round.endTurn()
+
+    expect(round.houseView()).toHaveLength(2)
+    expect(round.houseView()[0]).toBe(houseHand.cards[0])
+    expect(round.houseView()[1]).toBe(houseHand.cards[1])
   })
 
   it('can end round if all players finished', () => {

@@ -82,9 +82,6 @@ class Round {
   }
   
   private endRound() {
-    if(this.getActivePlayer()) {
-      throw new Error('cannot end round')
-    }
     this.takeHouseTurn()
     for (const player of this.players) {
       for (const hand of player.activeHands()) {

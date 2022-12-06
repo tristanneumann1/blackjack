@@ -9,7 +9,7 @@ export default class Player {
   betSize = 0
   private handIndex = 0
 
-  dealHand(hand = new Hand()): void {
+  dealHand(hand): void {
     if (this.funds < this.betSize) {
       throw new Error('insufficient funds')
     }

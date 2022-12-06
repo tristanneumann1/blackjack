@@ -92,6 +92,16 @@ describe('Player', () => {
     expect(player.canInsure()).toBe(false)
   })
 
+  it('cannot hit if no active hand, or hand is busted', () => {
+    const player = new Player()
+
+    expect(player.canHit()).toBe(false)
+    
+    player.dealHand(handFactory(10, 10, 10))
+    
+    expect(player.canHit()).toBe(false)
+  })
+
   describe('payouts', () => {
     it('leaves money on a loss', () => {
       const player = playerWithFundsFactory(100, 10)

@@ -69,19 +69,6 @@ class Round {
     }
   }
 
-  endRound() {
-    if(this.getActivePlayer()) {
-      throw new Error('cannot end round')
-    }
-    this.takeHouseTurn()
-    for (const player of this.players) {
-      for (const round of player.readHands()) {
-        round.beatsHouse(this.houseValue())
-      }
-    }
-    this.active = false
-  }
-
   getDescriptor(): string {
     // function used as view to check moves
     return [
@@ -94,6 +81,20 @@ class Round {
     return checkMove(this)
   }
   
+  private endRound() {
+    if(this.getActivePlayer()) {
+      throw new Error('cannot end round')
+    }
+    this.takeHouseTurn()
+    for (const player of this.players) {
+      for (const hand of player.activeHands()) {
+        hand.beatsHouse(this.houseValue())
+      }
+      player.payOut()
+    }
+    this.active = false
+  }
+
   private deal(): void {
     for (const player of this.players) {
       const hand = new Hand()

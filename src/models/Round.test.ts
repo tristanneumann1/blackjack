@@ -1,6 +1,6 @@
 import { CARD_SUITS, CARD_TYPES, TURNS } from '../enums.js'
 import Card from './Card.js'
-import { getFilledShoe, handFactory, playerWithHand, roundFactory } from '../../test/utils.js'
+import { getFilledShoe, handFactory, playerWithFundsFactory, playerWithHand, roundFactory } from '../../test/utils.js'
 import Player from './Player.js'
 import Round from './Round.js'
 
@@ -60,20 +60,12 @@ describe('Round', () => {
     expect(round.houseView()[0]).toBeInstanceOf(Card)
   })
 
-  it('cannot end if there are still active hands', () => {
-    const round = new Round(getFilledShoe())
-    round.addPlayer(new Player())
-
-    expect(() => round.endRound()).toThrowError('cannot end round')
-  })
-
   it('can end round if all players finished', () => {
     const round = new Round(getFilledShoe())
     round.addPlayer(new Player())
     round.start()
 
     round.endTurn()
-    round.endRound()
 
     expect(round.active).toBe(false)
   })
@@ -84,7 +76,6 @@ describe('Round', () => {
     round.start()
 
     round.endTurn()
-    round.endRound()
 
     expect(round.houseValue()).toEqual({
       hardTotal: 18,
@@ -106,7 +97,6 @@ describe('Round', () => {
     round.start()
 
     round.endTurn()
-    round.endRound()
 
     expect(round.houseValue()).toEqual({
       hardTotal: 17,
@@ -116,7 +106,7 @@ describe('Round', () => {
     })
   })
 
-  it('calculates all round payoffs as round ends', () => {
+  it('calculates all results of active hands as round ends', () => {
     const round = new Round(getFilledShoe())
     const player1 = new Player()
     const player2 = new Player()
@@ -126,12 +116,35 @@ describe('Round', () => {
 
     round.endTurn()
     round.endTurn()
-    round.endRound()
 
     const hands = player1.readHands().concat(player2.readHands())
+    expect(hands.length).toBe(2)
     hands.forEach(hand => {
       expect(hand.getResult()).not.toBe(null)
     })
+  })
+
+  it('pays off player at the end of a round', () => {
+    const player = playerWithFundsFactory(100, 10)
+    player.dealHand(handFactory(10, 10))
+
+    const houseHand = handFactory(10, 7)
+
+    const round = roundFactory(houseHand, player)
+    round.endTurn()
+
+    expect(player.funds).toBe(110)
+  })
+
+  it('disactivates hands after the round is ended', () => {
+    const player = playerWithHand(10, 10)
+    const round = roundFactory(handFactory(), player)
+
+    round.endTurn()
+
+    expect(player.readHands().length).toBe(1)
+    expect(player.readHands()[0].getActive()).toBe(false)
+    expect(player.activeHands().length).toBe(0)
   })
 
   it('can check correct turn', () => {

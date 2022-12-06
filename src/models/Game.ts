@@ -87,7 +87,6 @@ export default class Game {
     if (this.activeRound?.active) {
       throw new Error('cannot end round')
     }
-    this.activeRound?.players.forEach(player => player.payOut())
     this.pastRounds.push(this.activeRound)
     this.activeRound = null
   }

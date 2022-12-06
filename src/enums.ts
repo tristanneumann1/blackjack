@@ -1,5 +1,6 @@
 export enum CARD_TYPES {
-  TWO = 2,
+  ACE = 1,
+  TWO,
   THREE,
   FOUR,
   FIVE,
@@ -10,8 +11,7 @@ export enum CARD_TYPES {
   TEN,
   JACK,
   QUEEN,
-  KING,
-  ACE
+  KING
 }
 
 export enum CARD_SUITS {
@@ -29,12 +29,12 @@ export enum RESULTS {
 }
 
 export enum TURNS {
-  HIT,
-  STAND,
-  DOUBLE,
-  SPLIT,
-  SURRENDER,
-  INSURANCE
+  HIT = 'HIT',
+  STAND = 'STAND',
+  DOUBLE = 'DOUBLE',
+  SPLIT = 'SPLIT',
+  SURRENDER = 'SURRENDER',
+  INSURANCE = 'INSURANCE'
 }
 
 export function enumKeys<O extends object, K extends keyof O = keyof O>(obj: O): K[] {

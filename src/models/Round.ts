@@ -4,13 +4,15 @@ import Player from './Player.js';
 import Hand from './Hand.js';
 import Card from './Card.js';
 import { HandValue } from '../interfaces.js';
+import { TURNS } from '../enums.js';
+import checkMove from './MoveChecker.js';
 
 class Round {
   active = false;
   readonly id: string;
   players: Player[] = [];
+  protected house: Hand
   private shoe: Shoe;
-  private house: Hand
   private playerIndex = 0
 
   constructor (shoe: Shoe = new Shoe(), id: string = v4()) {
@@ -78,6 +80,18 @@ class Round {
       }
     }
     this.active = false
+  }
+
+  getDescriptor(): string {
+    // function used as view to check moves
+    return [
+      this.getActivePlayer().getCurrentHand().getHandValue().hardTotal,
+      this.houseView()[0].getValue()
+    ].join(' ')
+  }
+
+  getExpectedTurn(): TURNS {
+    return checkMove(this)
   }
   
   private deal(): void {

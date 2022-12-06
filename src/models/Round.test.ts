@@ -1,6 +1,6 @@
-import { CARD_SUITS, CARD_TYPES } from '../enums.js'
+import { CARD_SUITS, CARD_TYPES, TURNS } from '../enums.js'
 import Card from './Card.js'
-import { getFilledShoe } from '../../test/utils.js'
+import { getFilledShoe, handFactory, playerWithHand, roundFactory } from '../../test/utils.js'
 import Player from './Player.js'
 import Round from './Round.js'
 
@@ -132,5 +132,11 @@ describe('Round', () => {
     hands.forEach(hand => {
       expect(hand.getResult()).not.toBe(null)
     })
+  })
+
+  it('can check correct turn', () => {
+    const round = roundFactory(handFactory(10), playerWithHand(10, 9))
+
+    expect(round.getExpectedTurn()).toBe(TURNS.STAND)
   })
 })

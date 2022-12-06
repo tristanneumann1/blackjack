@@ -4,7 +4,7 @@ import Game from './models/Game.js';
 import Player from './models/Player.js';
 import seedrandom from 'seedrandom'
 import Hand from './models/Hand.js';
-seedrandom('a rando seed 2', { global: true })
+seedrandom('a random seeed', { global: true })
 
 function readCard(card: Card): string {
   const cardSymbol: string = CARD_TYPES[card.type]

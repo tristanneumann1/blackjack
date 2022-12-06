@@ -26,6 +26,12 @@ export default class Game {
       throw new Error('cannot take turn')
     }
 
+    const expectedTurn = this.activeRound.getExpectedTurn()
+
+    if(turn !== expectedTurn) {
+      console.log('expected turn was: ', TURNS[TURNS[expectedTurn]])
+    }
+
     const activePlayer: Player = this.activeRound.getActivePlayer()
     const activeHand: Hand = activePlayer.getCurrentHand()
 

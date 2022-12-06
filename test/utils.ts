@@ -4,7 +4,11 @@ import Card from '../src/models/Card.js';
 import Game from '../src/models/Game.js';
 import Hand from '../src/models/Hand.js';
 import Player from '../src/models/Player.js';
+import Round from '../src/models/Round.js';
 import Shoe from '../src/models/Shoe.js';
+
+
+// ------------------ SHOE ------------------ //
 
 interface FillShoeOptions {
   type?: CARD_TYPES,
@@ -26,6 +30,8 @@ export function getFilledShoe(options: FillShoeOptions = {}): Shoe {
   shoe.fill();
   return shoe;
 }
+
+// ------------------ GAME ------------------ //
 
 export class RiggedGame extends Game {
   riggedCards: Card[] = [];
@@ -53,6 +59,8 @@ export function riggedGameFactory(options: RiggedGameFactoryOptions = {}) {
   );
 }
 
+// ------------------ PLAYER ------------------ //
+
 export function playerWithFundsFactory(funds: number, betSize = 0): Player {
   const player = new Player()
   player.addFunds(funds)
@@ -60,13 +68,22 @@ export function playerWithFundsFactory(funds: number, betSize = 0): Player {
   return player
 }
 
-export function handFactory(...cardTypes: CARD_TYPES[]): Hand {
+export function playerWithHand(...cardTypes: CARD_TYPES[]): Player {
+  const player = new Player()
+  const hand = handFactory(...cardTypes)
+  player.dealHand(hand)
+  return player
+}
+
+// ------------------ HAND ------------------ //
+
+export function handFactory(...cardTypes: number[]): Hand {
   if(!cardTypes.length) {
-    cardTypes = [CARD_TYPES.TEN, CARD_TYPES.TEN]
+    cardTypes = [10, 10]
   }
   return new Hand({
     cards: cardTypes.map(type => {
-      return new Card(type, CARD_SUITS.CLUB)
+      return new Card(CARD_TYPES[CARD_TYPES[type]], CARD_SUITS.CLUB)
     })
   })
 }
@@ -79,4 +96,25 @@ export function handValueFactory(options: any = {}): HandValue {
     isSoft: options.isSoft || false,
     isBlackJack: options.isBlackJack || false
   }
+}
+
+// ------------------ ROUND ------------------ //
+
+class RiggedRound extends Round {
+  constructor () {
+    super(getFilledShoe(), 'rigged-round-id')
+    this.active = true
+  }
+  setHouse(hand: Hand) {
+    this.house = hand
+  }
+}
+
+export function roundFactory(house: Hand = null, player: Player = new Player()): Round {
+  const round = new RiggedRound()
+  round.addPlayer(player)
+  if (house) {
+    round.setHouse(house)
+  }
+  return round
 }

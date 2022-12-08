@@ -1,11 +1,11 @@
-import { CARD_SUITS, CARD_TYPES } from '../src/enums.js';
-import { HandValue } from '../src/interfaces.js';
-import Card from '../src/models/Card.js';
-import Game from '../src/models/Game.js';
-import Hand from '../src/models/Hand.js';
-import Player from '../src/models/Player.js';
-import Round from '../src/models/Round.js';
-import Shoe from '../src/models/Shoe.js';
+import { CARD_SUITS, CARD_TYPES } from '../server/enums.js';
+import { HandValue } from '../server/interfaces.js';
+import Card from '../server/models/Card.js';
+import Game from '../server/models/Game.js';
+import Hand from '../server/models/Hand.js';
+import Player from '../server/models/Player.js';
+import Round from '../server/models/Round.js';
+import Shoe from '../server/models/Shoe.js';
 
 
 // ------------------ SHOE ------------------ //

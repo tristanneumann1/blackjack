@@ -1,6 +1,7 @@
 import { TURNS } from '../enums.js';
 import Hand from './Hand.js';
 import Player from './Player.js';
+import PlayerManager from './PlayerManager.js';
 import Round from './Round.js';
 import Shoe from './Shoe.js';
 
@@ -8,16 +9,20 @@ export default class Game {
   activeRound: Round = null
   pastRounds: Round[] = []
   protected shoe: Shoe = new Shoe()
-  private players: Player[] = []
+  private players: PlayerManager = new PlayerManager()
 
   addPlayer(player: Player) {
-    this.players.push(player)
+    this.players.addPlayer(player)
   }
 
   startRound() {
+    if(!this.players.playersCanStart()) {
+      throw new Error('players do not have sufficient funds')
+    }
+
     this.fillShoe()
     this.activeRound = new Round(this.shoe)
-    this.players.forEach(this.activeRound.addPlayer.bind(this.activeRound))
+    this.players.addToRound(this.activeRound)
     this.activeRound.start()
   }
 

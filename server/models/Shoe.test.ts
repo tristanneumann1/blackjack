@@ -56,4 +56,13 @@ describe('Shoe', () => {
     shoe.draw(5)
     expect(shoe.getCount()).toBe(0)
   })
+
+  it('resets count to 0 after fill', () => {
+    const shoe = new Shoe()
+    shoe.fill()
+    shoe.draw(10)
+    shoe.fill()
+
+    expect(shoe.getCount()).toBe(0)
+  })
 })

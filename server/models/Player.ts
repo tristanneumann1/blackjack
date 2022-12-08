@@ -9,6 +9,10 @@ export default class Player {
   betSize = 0
   private handIndex = 0
 
+  canDeal(): boolean {
+    return this.funds >= this.betSize
+  }
+
   dealHand(hand): void {
     if (this.funds < this.betSize) {
       throw new Error('insufficient funds')

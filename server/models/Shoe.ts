@@ -8,6 +8,7 @@ class Shoe {
   
   fill(deckAmount = 4): void {
     this.emptyShoe()
+    this.count = 0
     for (let i = 0; i < deckAmount; i++) {
       this.addDeck()
     }

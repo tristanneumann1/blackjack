@@ -54,8 +54,9 @@ describe('Round', () => {
     const houseHand = handFactory(10, 9)
     const round = roundFactory(houseHand, new Player())
 
-    expect(round.houseView()).toHaveLength(1)
+    expect(round.houseView()).toHaveLength(2)
     expect(round.houseView()[0]).toBe(houseHand.cards[0])
+    expect(round.houseView()[1]).toBe(null)
   })
 
   it('reveals house cards when round is finished', () => {

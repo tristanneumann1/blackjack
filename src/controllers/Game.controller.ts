@@ -13,8 +13,11 @@ export default class GameController {
   }
 
   start() {
+    if(!this.currentGame) {
+      this.currentGame = new Game()
+    }
     try {
-      this.currentGame?.startRound()
+      this.currentGame.startRound()
     } catch(e) {
       this.throw('cannot start game, ' + e.message)
     }
@@ -27,11 +30,18 @@ export default class GameController {
     return this.currentGame.activeRound.houseView()
   }
 
-  takeTurn(turn: TURNS) {
+  takeTurn(player: Player, turn: TURNS) {
     if (!this.currentGame) {
       this.throw('can not take turn, no game in progress')
     }
-    this.currentGame.takeTurn(turn)
+    if (this.currentGame.getActivePlayer() !== player) {
+      this.throw('can not take turn, it is another player\'s turn')
+    }
+    try {
+      this.currentGame.takeTurn(turn)
+    } catch (e) {
+      this.throw('can not take turn, ' + e.message)
+    }
   }
 
   endGame() {

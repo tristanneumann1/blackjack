@@ -34,7 +34,7 @@ class Round {
 
   houseView(): Card[] {
     if (this.active) {
-      return [this.house.cards[0]]
+      return [this.house.cards[0], null]
     }
     return this.house.cards
   }

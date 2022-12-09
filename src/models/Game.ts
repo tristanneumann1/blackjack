@@ -85,6 +85,8 @@ export default class Game {
         }
         activePlayer.insure()
         break
+      default:
+        throw new Error('invalid turn type')
     }
   }
 

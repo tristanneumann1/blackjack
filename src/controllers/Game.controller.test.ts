@@ -51,15 +51,16 @@ describe('game controller', () => {
 
   it('throws an error if taking a turn but no game in progress', () => {
     const gameController = new GameController()
-    expect(() => gameController.takeTurn(TURNS.STAND)).toThrowError('[Game Controller] can not take turn, no game in progress')
+    expect(() => gameController.takeTurn(new Player(), TURNS.STAND)).toThrowError('[Game Controller] can not take turn, no game in progress')
   })
 
   it('can take a turn', () => {
     const gameController = new GameController()
-    gameController.addPlayer(new Player())
+    const player = new Player()
+    gameController.addPlayer(player)
     
     gameController.start()
-    gameController.takeTurn(TURNS.STAND)
+    gameController.takeTurn(player, TURNS.STAND)
 
     expect(gameController.currentGame.getActivePlayer()).toBe(null)
   })
@@ -74,7 +75,8 @@ describe('game controller', () => {
     gameController.addPlayer(new Player())
     gameController.start()
 
-    expect(gameController.viewHouse().length).toBe(1)
+    expect(gameController.viewHouse().length).toBe(2)
     expect(gameController.viewHouse()[0]).toBeInstanceOf(Card)
+    expect(gameController.viewHouse()[1]).toBeNull()
   })
 })

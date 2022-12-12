@@ -8,28 +8,6 @@ import { playerAuth } from './middleware.js'
 function route(app: Application): Application {
   const playerController = new PlayerController()
   const gameController = new GameController()
-  /*
-    ENTITY: PLAYER & ADMIN & ALL
-
-    ALL
-      create player
-
-    PLAYER
-      read player
-      update betSize
-      add funds
-      join game (creates one by default)
-      start round
-      end game
-      Take turn (game)
-      read current Hands
-      read Round
-      View running count
-      * view history + stats *
-
-    ADMIN
-      -
-  */
   const gameRouter = Router() 
   const playerRouter = Router()
   const authedPlayerRouter = Router({ mergeParams: true })
@@ -49,7 +27,7 @@ function route(app: Application): Application {
     }
     res.status(200).send(playerToDTO(player))
   })
-  authedPlayerRouter.post('/addFunds', express.json(), (req: Request, res: Response) => {
+  authedPlayerRouter.post('/add-funds', express.json(), (req: Request, res: Response) => {
     const playerId = req.params.playerId
     const amount = req.body.funds
 
@@ -61,7 +39,7 @@ function route(app: Application): Application {
       return
     }
   })
-  authedPlayerRouter.post('/setBetSize', express.json(), (req: Request, res: Response) => {
+  authedPlayerRouter.post('/set-bet-size', express.json(), (req: Request, res: Response) => {
     const playerId = req.params.playerId
     const amount = req.body.betSize
 
@@ -73,7 +51,7 @@ function route(app: Application): Application {
       return
     }
   })
-  authedPlayerRouter.post('/joinGame', (req: Request, res: Response) => {
+  authedPlayerRouter.post('/join-game', (req: Request, res: Response) => {
     const playerId = req.params.playerId
     const player = playerController.getById(playerId)
 
@@ -86,7 +64,7 @@ function route(app: Application): Application {
     // gameController.start()
     res.status(200).send(gameToDTO(gameController.currentGame))
   })
-  authedPlayerRouter.post('/takeTurn/:turn', (req: Request, res: Response) => {
+  authedPlayerRouter.post('/take-turn/:turn', (req: Request, res: Response) => {
     const playerId = req.params.playerId
     const player = playerController.getById(playerId)
     const turn = TURNS[req.params.turn]
@@ -106,7 +84,7 @@ function route(app: Application): Application {
     res.status(200).send(gameToDTO(gameController.currentGame))
   })
 
-  gameRouter.post('/startRound', (_: Request, res: Response) => {
+  gameRouter.post('/start-round', (_: Request, res: Response) => {
     try {
       gameController.start()
       res.status(200).send(gameToDTO(gameController.currentGame))
@@ -115,7 +93,7 @@ function route(app: Application): Application {
     }
   })
   
-  gameRouter.post('/endGame', (_: Request, res: Response) => {
+  gameRouter.post('/end-game', (_: Request, res: Response) => {
     gameController.endGame()
     res.status(200).end()
   })

@@ -11,9 +11,9 @@ interface gameStartedReturn {
 async function startGame(app: Application): Promise<gameStartedReturn> {
   const playerCreated = await request(app).post('/player');
   const playerId: string = playerCreated.body.id
-  await request(app).post('/player/' + playerId + '/joinGame').set('Player-Id', playerId);
+  await request(app).post('/player/' + playerId + '/join-game').set('Player-Id', playerId);
 
-  const game = await request(app).post('/game/startRound')
+  const game = await request(app).post('/game/start-round')
 
   return {
     player: playerCreated.body,
@@ -61,17 +61,17 @@ describe('routes', () => {
     
     it('returns a 400 if player does not exist', async () => {
       const resSetBetSize = await request(app)
-      .post('/player/player-id/setBetSize')
+      .post('/player/player-id/set-bet-size')
       .send({ betSize: 400 })
       .set('Player-Id', 'player-id')
   
       const resAddFunds = await request(app)
-      .post('/player/player-id/addFunds')
+      .post('/player/player-id/add-funds')
       .send({ funds: 400 })
       .set('Player-Id', 'player-id')
       
       const resJoinGame = await request(app)
-      .post('/player/player-id/joinGame')
+      .post('/player/player-id/join-game')
       .send({ funds: 400 })
       .set('Player-Id', 'player-id')
       
@@ -85,7 +85,7 @@ describe('routes', () => {
       const playerId: string = playerCreated.body.id
       
       const res = await request(app)
-      .post('/player/' + playerId + '/addFunds')
+      .post('/player/' + playerId + '/add-funds')
       .send({funds: 400})
       .set('Player-Id', playerId)
       
@@ -100,7 +100,7 @@ describe('routes', () => {
       const playerId: string = playerCreated.body.id
       
       const res = await request(app)
-      .post('/player/' + playerId + '/setBetSize')
+      .post('/player/' + playerId + '/set-bet-size')
       .send({ betSize: 400 })
       .set('Player-Id', playerId)
       
@@ -115,7 +115,7 @@ describe('routes', () => {
       const playerId: string = playerCreated.body.id
   
       const res = await request(app)
-      .post('/player/' + playerId + '/joinGame')
+      .post('/player/' + playerId + '/join-game')
       .set('Player-Id', playerId)
   
       expect(res.statusCode).toBe(200);
@@ -125,7 +125,7 @@ describe('routes', () => {
     
     it('throws error if can not take a turn', async () => {
       const res = await request(app)
-      .post('/player/player-id/takeTurn/DOUBLE')
+      .post('/player/player-id/take-turn/DOUBLE')
       .set('Player-Id', 'player-id');
 
       expect(res.statusCode).toBe(400)
@@ -135,7 +135,7 @@ describe('routes', () => {
     it('throws error if not current player\'s turn', async () => {
       await startGame(app)
       const res = await request(app)
-      .post('/player/player-id/takeTurn/DOUBLE')
+      .post('/player/player-id/take-turn/DOUBLE')
       .set('Player-Id', 'player-id');
 
       expect(res.statusCode).toBe(400)
@@ -145,7 +145,7 @@ describe('routes', () => {
     it('throws error if invalid turn type', async () => {
       const { player } = await startGame(app)
       const res = await request(app)
-      .post(`/player/${player.id}/takeTurn/INVALID`)
+      .post(`/player/${player.id}/take-turn/INVALID`)
       .set('Player-Id', player.id);
 
       expect(res.statusCode).toBe(400)
@@ -158,7 +158,7 @@ describe('routes', () => {
 
       game
       const res = await request(app)
-      .post(`/player/${player.id}/takeTurn/SPLIT`)
+      .post(`/player/${player.id}/take-turn/SPLIT`)
       .set('Player-Id', player.id)
 
       expect(res.statusCode).toBe(400)
@@ -168,7 +168,7 @@ describe('routes', () => {
     it('can take a turn', async () => {
       const { player } = await startGame(app)
       const res = await request(app)
-      .post(`/player/${player.id}/takeTurn/STAND`)
+      .post(`/player/${player.id}/take-turn/STAND`)
       .set('Player-Id', player.id);
 
       expect(res.statusCode).toBe(200)
@@ -181,7 +181,7 @@ describe('routes', () => {
   describe('game routes', () => {
     it('returns a 400 if not enough players when starting a round', async () => {
       const res = await request(app)
-      .post('/game/startRound')
+      .post('/game/start-round')
 
       expect(res.statusCode).toBe(400)
       expect(res.text).toBe('[Game Controller] cannot start game, players do not have sufficient funds')
@@ -190,10 +190,10 @@ describe('routes', () => {
     it('starts a game', async () => {
       const playerCreated = await request(app).post('/player');
       const playerId: string = playerCreated.body.id
-      await request(app).post('/player/' + playerId + '/joinGame').set('Player-Id', playerId);
+      await request(app).post('/player/' + playerId + '/join-game').set('Player-Id', playerId);
 
       const res = await request(app)
-      .post('/game/startRound')
+      .post('/game/start-round')
 
       expect(res.statusCode).toBe(200)
       const game: GameDTO = res.body
@@ -227,7 +227,7 @@ describe('routes', () => {
 
     it('ends a game if one in progress', async () => {
       await startGame(app)
-      const res = await request(app).post('/game/endGame')
+      const res = await request(app).post('/game/end-game')
 
       expect(res.statusCode).toBe(200)
 

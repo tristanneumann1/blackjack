@@ -9,14 +9,11 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "start:server": "node dist/src/index.js",
-    "start:server-w": "nodemon dist/src/index.js",
-    "build:server": "tsc -p tsconfig.json",
-    "build:server-w": "tsc -w -p tsconfig.json",
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint && eslint ./src --ext .ts"
+    "start": "node dist/src/index.js",
+    "start-w": "nodemon dist/src/index.js",
+    "build": "tsc -p tsconfig.json",
+    "build-w": "tsc -w -p tsconfig.json",
+    "lint": "eslint ./src --ext .ts"
   },
   "author": "Tristan Neumann",
   "license": "ISC",
